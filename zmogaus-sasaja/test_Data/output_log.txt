@@ -1,0 +1,47 @@
+Initialize engine version: 5.4.2f2 (b7e030c65c9b)
+GfxDevice: creating device client; threaded=1
+VR: OpenVR Error! OpenVR failed initialization with error code VRInitError_Init_PathRegistryNotFound: "Installation path could not be located (110)"!
+ 
+(Filename:  Line: 777)
+
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) UHD Graphics 620 (ID=0x5917)
+    Vendor:   Intel
+    VRAM:     2111 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\EyeTribe.Unity.dll (this message is harmless)
+Loading C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\EyeTribe.Unity.dll into Unity Child Domain
+- Completed reload, in  0.588 seconds
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.dll (this message is harmless)
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initialized touch support.
+VR: OpenVR Error! OpenVR failed initialization with error code VRInitError_Init_PathRegistryNotFound: "Installation path could not be located (110)"!
+ 
+(Filename:  Line: 777)
+
+VR: OpenVR Error! OpenVR failed initialization with error code VRInitError_Init_PathRegistryNotFound: "Installation path could not be located (110)"!
+ 
+(Filename:  Line: 777)
+
+UnloadTime: 2.294400 ms
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.ServiceModel.dll (this message is harmless)
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Configuration.dll (this message is harmless)
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Xml.dll (this message is harmless)
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 21dc -> priority: 1 
+  Thread -> id: 60b0 -> priority: 1 
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Runtime.Serialization.dll (this message is harmless)
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Xml.Linq.dll (this message is harmless)
+Platform assembly: C:\Users\mariu\Documents\GitHub\tet-unity-devkit-master\tet-unity-devkit-master\unity-sample\test_Data\Managed\System.Data.dll (this message is harmless)
