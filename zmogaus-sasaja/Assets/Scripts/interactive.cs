@@ -16,8 +16,6 @@ namespace EyeTribe.Unity.Interaction
         private InteractionHandler handler;
         public Button button;
 
-        private float temp;
-
         public void Start()
         {
             if (null == InteractiveItem)
@@ -25,7 +23,6 @@ namespace EyeTribe.Unity.Interaction
 
             button = gameObject.GetComponent<Button>();
             handler = gameObject.GetComponent<InteractionHandler>();
-            temp = button.transform.localScale.y;
 
             InteractiveItem.OnOver += handler.HandleIn;
             InteractiveItem.OnOut += handler.HandleOut;
