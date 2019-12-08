@@ -11,7 +11,7 @@ namespace EyeTribe.Unity.Interaction
 
         protected VRInteractiveItem InteractiveItem;
 
-        public virtual void Start()
+        public virtual void Awake()
         {
             InteractiveItem = gameObject.GetComponent<VRInteractiveItem>();
             InteractiveItem.OnOver += HandleIn;

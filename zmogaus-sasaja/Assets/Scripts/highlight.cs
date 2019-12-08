@@ -8,34 +8,41 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
     private IEnumerator _Highlight;
     private IEnumerator _Dehighlight;
 
-    private float _Duration = 0.5f;
+    private float _Duration = 0.1f;
     private float _Time = 0f;
-    private float _Step = 0.01f;
+    private float _Step = 0.3f;
 
     private SpriteRenderer _Sprite;
     private Color _InitialColor;
+    private Color _CurrentColor;
 
+    private bool active = false;
 
-    public override void Start()
+    public override void Awake()
     {
-        base.Start();
+        base.Awake();
         _Sprite = gameObject.GetComponent<SpriteRenderer>();
         if (_Sprite == null)
             throw new Exception("could not find sprite attached to object");
         _InitialColor = _Sprite.material.color;
+
+        _Step /= _Duration;
     }
 
     public override void HandleIn()
     {
         ///////////////// highlight enum logic //////////////////
-        if (null != _Dehighlight)
+        if (gameObject.activeInHierarchy)
         {
-            StopCoroutine(_Dehighlight);
-            _Dehighlight = null;
-        }
+            if (null != _Dehighlight)
+            {
+                StopCoroutine(_Dehighlight);
+                _Dehighlight = null;
+            }
 
-        if (null == _Highlight)
-            StartCoroutine(_Highlight = Highlight());
+            if (null == _Highlight)
+                StartCoroutine(_Highlight = Highlight());
+        }
         ///////////////// highlight enum logic //////////////////
 
     }
@@ -43,14 +50,19 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
     public override void HandleOut()
     {
         ///////////////// highlight enum logic //////////////////
-        if (null != _Highlight)
+        if (gameObject.activeInHierarchy)
         {
-            StopCoroutine(_Highlight);
-            _Highlight = null;
-        }
+            if (null != _Highlight)
+            {
+                StopCoroutine(_Highlight);
+                _Highlight = null;
+            }
 
-        if (null == _Dehighlight)
-            StartCoroutine(_Dehighlight = Dehighlight());
+            if (null == _Dehighlight)
+            {
+                StartCoroutine(_Dehighlight = Dehighlight());
+            }
+        }
         ///////////////// highlight enum logic //////////////////
 
     }
@@ -74,18 +86,23 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
         {
             _Time += Time.deltaTime;
 
-            Color theCurrentColor = _InitialColor;
+            _CurrentColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             Color alteredColor = new Color();
 
-            if(theCurrentColor.r < 1f)
-                alteredColor.r = theCurrentColor.r + _Step;
-            if (theCurrentColor.g < 1f)
-                alteredColor.g = theCurrentColor.g + _Step;
-            if (theCurrentColor.b < 1f)
-                alteredColor.b = theCurrentColor.b + _Step;
-            alteredColor.a = theCurrentColor.a;
+            if (_CurrentColor.r > 0f && _CurrentColor.g > 0f && _CurrentColor.b > 0f)
+            {
+                float step = _Step * Time.deltaTime;
+                alteredColor.r = _CurrentColor.r - step;
+                alteredColor.g = _CurrentColor.g - step;
+                alteredColor.b = _CurrentColor.b - step;
+                alteredColor.a = _CurrentColor.a;
 
-            gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
+                gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
+            }
+            else
+            {
+                break;
+            }
 
             yield return null;
         }
@@ -97,18 +114,23 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
         {
             _Time -= Time.deltaTime;
 
-            Color theCurrentColor = gameObject.GetComponent<SpriteRenderer>().color;
+            _CurrentColor = gameObject.GetComponent<SpriteRenderer>().material.color;
             Color alteredColor = new Color();
 
-            if (theCurrentColor.r > _InitialColor.r)
-                alteredColor.r = theCurrentColor.r - _Step;
-            if (theCurrentColor.g > _InitialColor.g)
-                alteredColor.g = theCurrentColor.g - _Step;
-            if (theCurrentColor.b > _InitialColor.b)
-                alteredColor.b = theCurrentColor.b - _Step;
-            alteredColor.a = theCurrentColor.a;
+            if (_CurrentColor.r < _InitialColor.r && _CurrentColor.g < _InitialColor.g && _CurrentColor.b < _InitialColor.b)
+            {
+                float step = _Step * Time.deltaTime;
+                alteredColor.r = _CurrentColor.r + step;
+                alteredColor.g = _CurrentColor.g + step;
+                alteredColor.b = _CurrentColor.b + step;
+                alteredColor.a = _CurrentColor.a;
 
-            gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
+                gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
+            }
+            else
+            {
+                break;
+            }
 
             yield return null;
         }

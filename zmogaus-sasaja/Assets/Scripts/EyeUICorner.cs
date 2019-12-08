@@ -20,12 +20,16 @@ namespace EyeTribe.Unity.Calibration
     /// </summary>
     public class EyeUICorner : MonoBehaviour
     {
-        [SerializeField]private Camera _Camera;
+        private Camera _Camera;
 
-        [SerializeField]private GameObject _LeftEye;
-        [SerializeField]private GameObject _RightEye;
+        private GameObject _LeftEye;
+        private GameObject _RightEye;
 
-        [SerializeField]private float _EyeScaleInitSize = 1f;
+        [SerializeField] private float _EyeScaleInitSize = 1f;
+        [SerializeField] private float _ResizeMultiplier = 1f;
+
+        private float xScreen;
+        private float yScreen;
 
         private double _EyesDistance;
         private Vector3 _EyeBaseScale;
@@ -38,6 +42,10 @@ namespace EyeTribe.Unity.Calibration
 
         void Awake()
         {
+            _Camera = gameObject.GetComponentInParent<Camera>();
+            _LeftEye = GameObject.FindGameObjectWithTag("leftEye");
+            _RightEye = GameObject.FindGameObjectWithTag("rightEye");
+
             if (null == _Camera)
                 throw new Exception("_Camera is not set!");
 
@@ -46,6 +54,9 @@ namespace EyeTribe.Unity.Calibration
 
             if (null == _RightEye)
                 throw new Exception("_RightEye is not set!");
+
+            xScreen = Screen.width;
+            yScreen = Screen.height;
         }
 
         void OnEnable()
@@ -107,10 +118,15 @@ namespace EyeTribe.Unity.Calibration
 
                             //position GO based on screen coordinates
                             Point2D gp = UnityGazeUtils.GetRelativeToScreenSpace(left.PupilCenterCoordinates);
+
+                            ////////////////
                             // normalize coordinates to top right corner
-                            float xMin = 0, xMax = 1, yMin = 0, yMax = 1, xOffset = 10, yOffset = 10, mult = 150;
-                            gp.X = (((gp.X - xMin) / (xMax - xMin)) * mult + xOffset);
-                            gp.Y = (((gp.X - xMin) / (xMax - xMin)) * mult + xOffset);
+                            //float xMin = 0, xMax = Screen.width, yMin = 0, yMax = Screen.height;
+                            float xMin = 0, xMax = xScreen, yMin = 0, yMax = yScreen;
+                            float xOffset = xMax * (1 - _ResizeMultiplier), yOffset = yMax * (1 - _ResizeMultiplier);
+                            gp.X = (((gp.X - xMin) / (xMax - xMin)) * _ResizeMultiplier * xMax + xOffset);
+                            gp.Y = (((gp.Y - yMin) / (yMax - yMin)) * _ResizeMultiplier * yMax + yOffset) - yMax * (1 - _ResizeMultiplier);
+                            ////////////////
 
                             _LeftEye.SetWorldPositionFromGaze(_Camera, gp, _LeftEye.transform.localPosition.z);
                             _LeftEye.transform.localScale = scaleVec * _EyeScaleInitSize;
@@ -134,6 +150,16 @@ namespace EyeTribe.Unity.Calibration
 
                             //position GO based on screen coordinates
                             Point2D gp = UnityGazeUtils.GetRelativeToScreenSpace(right.PupilCenterCoordinates);
+
+                            ////////////////
+                            // normalize coordinates to top right corner
+                            //float xMin = 0, xMax = Screen.width, yMin = 0, yMax = Screen.height;
+                            float xMin = 0, xMax = xScreen, yMin = 0, yMax = yScreen;
+                            float xOffset = xMax * (1 - _ResizeMultiplier), yOffset = yMax * (1 - _ResizeMultiplier);
+                            gp.X = (((gp.X - xMin) / (xMax - xMin)) * _ResizeMultiplier * xMax + xOffset);
+                            gp.Y = (((gp.Y - yMin) / (yMax - yMin)) * _ResizeMultiplier * yMax + yOffset) - yMax * (1 - _ResizeMultiplier);
+                            ////////////////
+
                             _RightEye.SetWorldPositionFromGaze(_Camera, gp, _RightEye.transform.localPosition.z);
                             _RightEye.transform.localScale = scaleVec * _EyeScaleInitSize;
                             _RightEye.transform.localEulerAngles = new Vector3(_RightEye.transform.localEulerAngles.x, _RightEye.transform.localEulerAngles.y, (float)-angle);

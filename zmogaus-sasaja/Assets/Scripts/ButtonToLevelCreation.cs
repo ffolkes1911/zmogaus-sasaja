@@ -8,9 +8,9 @@ public class ButtonToLevelCreation : EyeTribe.Unity.Interaction.InteractionHandl
 {
 
     private Button button;
-    public override void Start()
+    public override void Awake()
     {
-        base.Start();
+        base.Awake();
         button = gameObject.GetComponent<Button>();
     }
 

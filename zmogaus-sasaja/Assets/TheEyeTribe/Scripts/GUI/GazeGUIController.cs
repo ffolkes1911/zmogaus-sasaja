@@ -136,12 +136,12 @@ namespace EyeTribe.Unity
                 OnIndicatorModeToggle(ShowGazeIndicator);
         }
 
-        private static void ToggleSmoothMode()
+        public static void ToggleSmoothMode()
         {
             _UseSmoothed = !_UseSmoothed;
 
             if (null != OnSmoothModeToggle)
-                OnSmoothModeToggle(UseSmoothed);
+                OnSmoothModeToggle(_UseSmoothed);
         }
 
         public static void ToggleDebugMode()
