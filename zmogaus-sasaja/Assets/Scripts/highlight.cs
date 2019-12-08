@@ -10,9 +10,11 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
     private float _Duration = 0.5f;
     private float _Time = 0f;
+    private float _Step = 0.01f;
 
     private SpriteRenderer _Sprite;
     private Color _InitialColor;
+
 
     public override void Start()
     {
@@ -25,7 +27,7 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
     public override void HandleIn()
     {
-        Debug.Log("IN");
+        ///////////////// highlight enum logic //////////////////
         if (null != _Dehighlight)
         {
             StopCoroutine(_Dehighlight);
@@ -34,11 +36,13 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
         if (null == _Highlight)
             StartCoroutine(_Highlight = Highlight());
+        ///////////////// highlight enum logic //////////////////
 
     }
 
     public override void HandleOut()
     {
+        ///////////////// highlight enum logic //////////////////
         if (null != _Highlight)
         {
             StopCoroutine(_Highlight);
@@ -47,6 +51,8 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
         if (null == _Dehighlight)
             StartCoroutine(_Dehighlight = Dehighlight());
+        ///////////////// highlight enum logic //////////////////
+
     }
 
     public override void SelectionCanceled()
@@ -71,9 +77,12 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
             Color theCurrentColor = _InitialColor;
             Color alteredColor = new Color();
 
-            alteredColor.r = theCurrentColor.r + 0.1f;
-            alteredColor.g = theCurrentColor.g + 0.1f;
-            alteredColor.b = theCurrentColor.b + 0.1f;
+            if(theCurrentColor.r < 1f)
+                alteredColor.r = theCurrentColor.r + _Step;
+            if (theCurrentColor.g < 1f)
+                alteredColor.g = theCurrentColor.g + _Step;
+            if (theCurrentColor.b < 1f)
+                alteredColor.b = theCurrentColor.b + _Step;
             alteredColor.a = theCurrentColor.a;
 
             gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
@@ -91,9 +100,12 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
             Color theCurrentColor = gameObject.GetComponent<SpriteRenderer>().color;
             Color alteredColor = new Color();
 
-            alteredColor.r = theCurrentColor.r - 0.1f;
-            alteredColor.g = theCurrentColor.g - 0.1f;
-            alteredColor.b = theCurrentColor.b - 0.1f;
+            if (theCurrentColor.r > _InitialColor.r)
+                alteredColor.r = theCurrentColor.r - _Step;
+            if (theCurrentColor.g > _InitialColor.g)
+                alteredColor.g = theCurrentColor.g - _Step;
+            if (theCurrentColor.b > _InitialColor.b)
+                alteredColor.b = theCurrentColor.b - _Step;
             alteredColor.a = theCurrentColor.a;
 
             gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
@@ -101,7 +113,7 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
             yield return null;
         }
 
-        //gameObject.GetComponent<SpriteRenderer>().material.color = _InitialColor;
+        gameObject.GetComponent<SpriteRenderer>().material.color = _InitialColor;
 
         _Time = 0;
     }
