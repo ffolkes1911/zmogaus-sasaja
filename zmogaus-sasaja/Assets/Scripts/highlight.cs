@@ -16,8 +16,6 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
     private Color _InitialColor;
     private Color _CurrentColor;
 
-    private bool active = false;
-
     public override void Awake()
     {
         base.Awake();
@@ -89,7 +87,10 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
     public override void SelectionCompleted()
     {
-        Debug.Log("click");
+        if (InteractiveItem.IsOver)
+        {
+            Debug.Log("click HIGHLIGHT");
+        }
     }
 
     public override void SelectionStarted()
@@ -113,7 +114,7 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
                 alteredColor.b = _CurrentColor.b - step;
                 alteredColor.a = _CurrentColor.a;
 
-                gameObject.GetComponent<SpriteRenderer>().material.color = alteredColor;
+                _Material.color = alteredColor;
             }
             else
             {

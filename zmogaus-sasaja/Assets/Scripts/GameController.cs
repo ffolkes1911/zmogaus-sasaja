@@ -13,7 +13,11 @@ public class GameController : MonoBehaviour {
     bool playing = false;
     bool gotNode = false;
 
-    [HideInInspector] public Node startedNode; // node which you connect to another node
+    //[HideInInspector]
+    private Node startNode; // node from which you start connecting
+    private Node endNode; // node that you connect the startNode with
+
+    private NodeLine currentLine; // line that will connect start and end nodes
 
 	void Start () {
         levelObjects = GameObject.Find("LevelObjects").transform;
@@ -105,16 +109,63 @@ public class GameController : MonoBehaviour {
         }
     }
 	
-    void SetStartNode(Node node)
+    public void OnHandleEnterNode(Node node)
     {
-        if (gotNode)
+        if (playing)
         {
-            startedNode = node;
+            if (startNode == null) // if startNode not set, then it will be startNode
+            {
+                startNode = node;
+                gotNode = true;
+            }
+            else // else it's endNode
+            {
+
+            }
+        }
+        else
+        { // if not playing, set startNode
+            startNode = node;
             gotNode = true;
         }
     }
 
-    bool CheckConnection(NodeLine line, Node node)
+    public void OnHandleLeaveNode(Node node)
+    {
+        if (!playing)
+        {
+            startNode = null;
+        }
+    }
+
+    public void OnHandleEnterLine(NodeLine line)
+    {
+        if(playing && startNode != null)
+        {
+            if (line.isConnected(startNode))
+            {
+                currentLine = line;
+            }
+        }
+    }
+
+    public void OnHandleLeaveLine(NodeLine line)
+    {
+
+    }
+
+    void ConnectNodes(Node start, Node end, NodeLine line)
+    {
+        if(NodeConnectedToLine(line, end))
+        {
+            Debug.Log("Successfull connection");
+            startNode = endNode;
+            endNode = null;
+            currentLine = null;
+        }
+    }
+
+    bool NodeConnectedToLine(NodeLine line, Node node)
     {
         return line.isConnected(node);
     }

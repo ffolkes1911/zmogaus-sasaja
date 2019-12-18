@@ -2,15 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Node : MonoBehaviour {
+public class Node : EyeTribe.Unity.Interaction.InteractionHandler
+{
 
     //currently does not do anything.
 
-    List<Node> connectedNodes = new List<Node>();
+    GameController controller;
 
 	// Use this for initialization
 	void Start () {
-	
+        controller = GameObject.Find("GameController").GetComponent<GameController>();
 	}
 	
 	// Update is called once per frame
@@ -18,13 +19,25 @@ public class Node : MonoBehaviour {
 	
 	}
 
-    bool isConnected(Node node)
+    public override void HandleIn()
     {
-        return connectedNodes.Contains(node);
+        controller.OnHandleEnterNode(this);
     }
 
-    void Connect(Node node)
+    public override void HandleOut()
     {
+        controller.OnHandleLeaveNode(this);
+    }
 
+    public override void SelectionStarted()
+    {
+    }
+
+    public override void SelectionCanceled()
+    {
+    }
+
+    public override void SelectionCompleted()
+    {
     }
 }

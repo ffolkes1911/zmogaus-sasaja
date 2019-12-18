@@ -1,25 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NodeLine : MonoBehaviour {
+public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
+{
 
     [HideInInspector] public Node nodeStart;
     [HideInInspector] public Node nodeEnd;
     [HideInInspector] public Transform start;
     [HideInInspector] public Transform end;
+
     private LineRenderer line;
     private float lineWidth;
     private float colliderWidthMult = 6f;
     private float circleColliderRadius = 0.2f;
-
     private float colliderDepth = 0.05f;
 
     private float x, y, a, b;
 
-    private bool used;
+    private GameController controller;
+
+    public int lineUsesLeft = 1;
 
 	void Start () {
-
+        controller = GameObject.Find("GameController").GetComponent<GameController>();
 	}
 
     public void Initialize(float width, Node start, Node end)
@@ -117,5 +120,41 @@ public class NodeLine : MonoBehaviour {
         //Transform pointer = GameObject.Find("testingPoint").transform;
         //float dist = GetDistanceToPoint(pointer.position);
         //Debug.Log("length: " + dist);
+    }
+
+    public void useLine()
+    {
+        if(--lineUsesLeft <= 0)
+        {
+            Debug.Log("LINE IS USED UP");
+        }
+    }
+
+    public override void HandleIn()
+    {
+        if(lineUsesLeft > 0)
+        {
+            controller.OnHandleEnterLine(this);
+        }
+    }
+
+    public override void HandleOut()
+    {
+        if(lineUsesLeft > 0)
+        {
+            controller.OnHandleLeaveLine(this);
+        }
+    }
+
+    public override void SelectionStarted()
+    {
+    }
+
+    public override void SelectionCanceled()
+    {
+    }
+
+    public override void SelectionCompleted()
+    {
     }
 }
