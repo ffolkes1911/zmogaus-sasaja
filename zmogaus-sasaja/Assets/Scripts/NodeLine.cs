@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VRStandardAssets.Utils;
 
 public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
 {
-
     [HideInInspector] public Node nodeStart;
     [HideInInspector] public Node nodeEnd;
     [HideInInspector] public Transform start;
@@ -21,14 +21,18 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
 
     public int lineUsesLeft = 1;
 
-	void Start () {
+    public override void Awake()
+    {
+        base.Awake();
+        //InteractiveItem = gameObject.GetComponentInChildren<VRInteractiveItem>();
+
         controller = GameObject.Find("GameController").GetComponent<GameController>();
-	}
+    }
 
     public void Initialize(float width, Node start, Node end)
     {
         line = gameObject.GetComponent<LineRenderer>();
-        used = false;
+        lineUsesLeft = 1;
         SetLineWidth(width);
         Connect(start, end);
         CalculateLineEquation(this.start.position, this.end.position);
@@ -44,9 +48,13 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     public void Connect(Node start, Node end)
     {
         this.nodeStart = start;
+        start.ConnectToLine(this);
         this.nodeEnd = end;
+        end.ConnectToLine(this);
+
         this.start = nodeStart.transform;
         this.end = nodeEnd.transform;
+
         line.SetPosition(0, start.transform.position);
         line.SetPosition(1, end.transform.position);
     }
@@ -63,6 +71,7 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     {
         return a * x + b;
     }
+    
     public float GetPointX(float y)
     {
         return (y - b) / a;
@@ -112,7 +121,25 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
 
     public bool isConnected(Node node)
     {
-        return Object.ReferenceEquals(node, start) || Object.ReferenceEquals(node, end);
+        if(node != null)
+        {
+            bool result = false;
+            if(Object.ReferenceEquals(node, nodeStart))
+            {
+                result = true;
+            }
+            else if (Object.ReferenceEquals(node, nodeEnd))
+            {
+                result = true;
+            }
+            Debug.Log("node: " + node + " startNode: " + nodeStart + " endNode: " + nodeEnd);
+            return result;
+        }
+        else
+        {
+            Debug.Log("passed node is null");
+            return false;
+        }
     }
 	
 	// Update is called once per frame
@@ -126,7 +153,7 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     {
         if(--lineUsesLeft <= 0)
         {
-            Debug.Log("LINE IS USED UP");
+            Debug.Log("LINE HAS NO MORE USES");
         }
     }
 
@@ -134,7 +161,12 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     {
         if(lineUsesLeft > 0)
         {
+            Debug.Log("handle on line");
             controller.OnHandleEnterLine(this);
+        }
+        else
+        {
+            Debug.Log("line used up");
         }
     }
 

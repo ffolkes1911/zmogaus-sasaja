@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour {
     bool gotNode = false;
 
     //[HideInInspector]
-    private Node startNode; // node from which you start connecting
-    private Node endNode; // node that you connect the startNode with
+    private Node startNode = null; // node from which you start connecting
+    private Node endNode = null; // node that you connect the startNode with
 
     private NodeLine currentLine; // line that will connect start and end nodes
 
@@ -115,17 +115,27 @@ public class GameController : MonoBehaviour {
         {
             if (startNode == null) // if startNode not set, then it will be startNode
             {
+                Debug.Log("got start node");
                 startNode = node;
                 gotNode = true;
             }
-            else // else it's endNode
+            else if(currentLine != null)// else it's endNode
             {
-
+                Debug.Log("connecting nodes");
+                endNode = node;
+                ConnectNodes(startNode, endNode, currentLine);
+                if (node.IsDeadEnd())
+                {
+                    Debug.Log("GAME OVER");
+                    SetPlayingState(false);
+                    // display score
+                }
             }
         }
         else
         { // if not playing, set startNode
             startNode = node;
+            Debug.Log("got start node");
             gotNode = true;
         }
     }
@@ -144,8 +154,17 @@ public class GameController : MonoBehaviour {
         {
             if (line.isConnected(startNode))
             {
+                Debug.Log("got current line");
                 currentLine = line;
             }
+            else
+            {
+                Debug.Log("line not connected to node");
+            }
+        }
+        else
+        {
+            Debug.Log("playing: " + playing + " startnode: " + startNode);
         }
     }
 
@@ -156,28 +175,33 @@ public class GameController : MonoBehaviour {
 
     void ConnectNodes(Node start, Node end, NodeLine line)
     {
-        if(NodeConnectedToLine(line, end))
+        if(line.isConnected(end))
         {
             Debug.Log("Successfull connection");
+            // get average accuraccy from line
+
             startNode = endNode;
             endNode = null;
+
+            currentLine.useLine();
             currentLine = null;
         }
-    }
-
-    bool NodeConnectedToLine(NodeLine line, Node node)
-    {
-        return line.isConnected(node);
+        else
+        {
+            Debug.Log("line not connected to end node");
+        }
     }
 
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(playKey))
         {
+            Debug.Log("space press");
             SetPlayingState(true);
         }
         else if(Input.GetKeyUp(playKey))
         {
+            Debug.Log("space release");
             SetPlayingState(false);
         }
     }

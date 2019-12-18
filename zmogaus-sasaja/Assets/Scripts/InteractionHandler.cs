@@ -13,7 +13,7 @@ namespace EyeTribe.Unity.Interaction
 
         public virtual void Awake()
         {
-            InteractiveItem = gameObject.GetComponent<VRInteractiveItem>();
+            InteractiveItem = gameObject.GetComponentInChildren<VRInteractiveItem>();
             InteractiveItem.OnOver += HandleIn;
             InteractiveItem.OnOut += HandleOut;
 

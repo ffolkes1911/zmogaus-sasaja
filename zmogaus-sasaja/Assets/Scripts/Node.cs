@@ -4,20 +4,40 @@ using System.Collections.Generic;
 
 public class Node : EyeTribe.Unity.Interaction.InteractionHandler
 {
-
-    //currently does not do anything.
-
     GameController controller;
+    List<NodeLine> lines;
+    int linesLeft;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    public override void Awake()
+    {
+        base.Awake();
         controller = GameObject.Find("GameController").GetComponent<GameController>();
+        lines = new List<NodeLine>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
+
+    public void ConnectToLine(NodeLine line)
+    {
+        lines.Add(line);
+        linesLeft += line.lineUsesLeft;
+    }
+
+    public bool IsDeadEnd()
+    {
+        for (int i = 0; i < lines.Count; i++)
+        {
+            if(lines[i].lineUsesLeft > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public override void HandleIn()
     {
