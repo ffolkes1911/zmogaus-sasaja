@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
@@ -19,10 +20,14 @@ public class GameController : MonoBehaviour {
 
     private NodeLine currentLine; // line that will connect start and end nodes
 
+    private List<float> accuraccyList;
+    private Text textScore;
+
 	void Start () {
         levelObjects = GameObject.Find("LevelObjects").transform;
         nodePrefab = (GameObject)Resources.Load("Prefabs/Circle", typeof(GameObject));
         linePrefab = (GameObject)Resources.Load("Prefabs/Line", typeof(GameObject));
+        textScore = GameObject.Find("TextScore").GetComponent<Text>();
         LoadLevel("asd");
     }
 
@@ -30,6 +35,8 @@ public class GameController : MonoBehaviour {
     {
         lines = new List<NodeLine>();
         nodes = new List<Node>();
+        accuraccyList = new List<float>();
+
         DestroyLevelObjects();
         // do level loading
 
@@ -98,6 +105,16 @@ public class GameController : MonoBehaviour {
         lines.Add(nodeline6);
 
         // initial testing code
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].SaveFinalState();
+        }
+        for (int i = 0; i < lines.Count; i++)
+        {
+            lines[i].SaveFinalState();
+        }
+
     }
 
     void DestroyLevelObjects()
@@ -119,7 +136,7 @@ public class GameController : MonoBehaviour {
                 startNode = node;
                 gotNode = true;
             }
-            else if(currentLine != null)// else it's endNode
+            else if(currentLine != null && node != startNode)// else it's endNode
             {
                 Debug.Log("connecting nodes");
                 endNode = node;
@@ -127,6 +144,8 @@ public class GameController : MonoBehaviour {
                 if (node.IsDeadEnd())
                 {
                     Debug.Log("GAME OVER");
+                    DisplayScore();
+                    ResetLevel();
                     SetPlayingState(false);
                     // display score
                 }
@@ -156,6 +175,7 @@ public class GameController : MonoBehaviour {
             {
                 Debug.Log("got current line");
                 currentLine = line;
+                currentLine.StartTrackingAccuraccy();
             }
             else
             {
@@ -183,8 +203,15 @@ public class GameController : MonoBehaviour {
             startNode = endNode;
             endNode = null;
 
+            currentLine.StopTrackingAccuraccy();
+            accuraccyList.Add(currentLine.GetAverageAccuraccy());
             currentLine.useLine();
             currentLine = null;
+
+            if (start.IsDeadEnd()) // MUST BE AFTER useLine()
+            {
+                start.MarkNodeCleared();
+            }
         }
         else
         {
@@ -220,14 +247,45 @@ public class GameController : MonoBehaviour {
 
     void ResetLevel()
     {
+        for (int i = 0; i < nodes.Count; i++) // RESET NODES FIRST
+        {
+            nodes[i].Reset();
+        }
         for (int i = 0; i < lines.Count; i++)
         {
             lines[i].Reset();
         }
+        accuraccyList = new List<float>();
+    }
+
+    void DisplayScore()
+    {
+        float score = 0;
+        for (int i = 0; i < lines.Count; i++)
+        {
+            if(lines[i].lineUsesLeft <= 0)
+            {
+                score += 100;
+            }
+        }
         for (int i = 0; i < nodes.Count; i++)
         {
-            nodes[i].Reset();
+            if (nodes[i].IsDeadEnd())
+            {
+                score += 1000;
+            }
         }
+        float avgAccuraccySum = 0;
+        for (int i = 0; i < accuraccyList.Count; i++)
+        {
+            avgAccuraccySum += accuraccyList[i];
+        }
+        float avgAccuraccy = avgAccuraccySum / accuraccyList.Count;
+        score += 1 / avgAccuraccy;
 
+        textScore.text = "Surinkti taškai: " + score.ToString();
+        textScore.GetComponent<Fader>().FadeIn();
+        Debug.Log("FINAL SCORE: " + score);
+        // add accuraccy
     }
 }

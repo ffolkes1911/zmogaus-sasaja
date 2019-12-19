@@ -6,14 +6,19 @@ public class Node : EyeTribe.Unity.Interaction.InteractionHandler
 {
     GameController controller;
     List<NodeLine> lines;
-    int linesLeft;
+    ColorShifter colorShifter;
+    private highlight highlighter;
+    int initialLinesLeft;
+    int currentLinesLeft;
 
     // Use this for initialization
     public override void Awake()
     {
         base.Awake();
         controller = GameObject.Find("GameController").GetComponent<GameController>();
-        lines = new List<NodeLine>(); 
+        lines = new List<NodeLine>();
+        colorShifter = gameObject.GetComponent<ColorShifter>();
+        highlighter = gameObject.GetComponentInChildren<highlight>();
     }
 
     // Update is called once per frame
@@ -24,7 +29,7 @@ public class Node : EyeTribe.Unity.Interaction.InteractionHandler
     public void ConnectToLine(NodeLine line)
     {
         lines.Add(line);
-        linesLeft += line.lineUsesLeft;
+        currentLinesLeft += line.lineUsesLeft;
     }
 
     public bool IsDeadEnd()
@@ -39,19 +44,37 @@ public class Node : EyeTribe.Unity.Interaction.InteractionHandler
         return true;
     }
 
+    public void MarkNodeCleared()
+    {
+        highlighter.Disable();
+        colorShifter.ShiftUp();
+    }
+
+    public void SaveFinalState()
+    {
+        initialLinesLeft = currentLinesLeft;
+    }
+
     public void Reset()
     {
-
+        if (IsDeadEnd())
+        {
+            highlighter.Enable();
+            colorShifter.ShiftDown();
+        }
+        currentLinesLeft = initialLinesLeft;
     }
 
     public override void HandleIn()
     {
-        controller.OnHandleEnterNode(this);
+        if(!disabled)
+            controller.OnHandleEnterNode(this);
     }
 
     public override void HandleOut()
     {
-        controller.OnHandleLeaveNode(this);
+        if (!disabled)
+            controller.OnHandleLeaveNode(this);
     }
 
     public override void SelectionStarted()

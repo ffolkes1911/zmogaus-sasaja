@@ -40,6 +40,7 @@ GameObject:
   - 4: {fileID: 4000012871395878}
   - 120: {fileID: 120000013789885534}
   - 114: {fileID: 114000010406064620}
+  - 114: {fileID: 114000011416671362}
   m_Layer: 5
   m_Name: Line
   m_TagString: Untagged
@@ -116,6 +117,7 @@ MonoBehaviour:
   nodeEnd: {fileID: 0}
   start: {fileID: 0}
   end: {fileID: 0}
+  initialLineUsesLeft: 1
   lineUsesLeft: 1
 --- !u!114 &114000011123769268
 MonoBehaviour:
@@ -126,6 +128,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fea6f8eea666334aaf9869ad8f7bcda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114000011416671362
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013974881366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da1d68a420610dd4a99d9ca0f582b9bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114000011481099394

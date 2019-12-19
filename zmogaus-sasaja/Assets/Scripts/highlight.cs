@@ -45,40 +45,44 @@ public class highlight : EyeTribe.Unity.Interaction.InteractionHandler
 
     public override void HandleIn()
     {
-        ///////////////// highlight enum logic //////////////////
-        if (gameObject.activeInHierarchy)
+        if (!disabled)
         {
-            if (null != _Dehighlight)
+            ///////////////// highlight enum logic //////////////////
+            if (gameObject.activeInHierarchy)
             {
-                StopCoroutine(_Dehighlight);
-                _Dehighlight = null;
+                if (null != _Dehighlight)
+                {
+                    StopCoroutine(_Dehighlight);
+                    _Dehighlight = null;
+                }
+
+                if (null == _Highlight)
+                    StartCoroutine(_Highlight = Highlight());
             }
-
-            if (null == _Highlight)
-                StartCoroutine(_Highlight = Highlight());
+            ///////////////// highlight enum logic //////////////////
         }
-        ///////////////// highlight enum logic //////////////////
-
     }
 
     public override void HandleOut()
     {
-        ///////////////// highlight enum logic //////////////////
-        if (gameObject.activeInHierarchy)
+        if (!disabled)
         {
-            if (null != _Highlight)
+            ///////////////// highlight enum logic //////////////////
+            if (gameObject.activeInHierarchy)
             {
-                StopCoroutine(_Highlight);
-                _Highlight = null;
-            }
+                if (null != _Highlight)
+                {
+                    StopCoroutine(_Highlight);
+                    _Highlight = null;
+                }
 
-            if (null == _Dehighlight)
-            {
-                StartCoroutine(_Dehighlight = Dehighlight());
+                if (null == _Dehighlight)
+                {
+                    StartCoroutine(_Dehighlight = Dehighlight());
+                }
             }
+            ///////////////// highlight enum logic //////////////////
         }
-        ///////////////// highlight enum logic //////////////////
-
     }
 
     public override void SelectionCanceled()
