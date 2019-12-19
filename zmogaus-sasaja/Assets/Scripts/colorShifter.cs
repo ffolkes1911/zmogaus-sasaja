@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class colorShifter : MonoBehaviour
+public class ColorShifter : MonoBehaviour
 {
 
     private IEnumerator _ShiftColorUp;
     private IEnumerator _ShiftColorDown;
 
-    private float _Duration = 0.1f;
+    private float _Duration = 0.2f;
     private float _Time = 0f;
     private float _Step = 0.3f;
 
@@ -53,7 +53,10 @@ public class colorShifter : MonoBehaviour
             }
 
             if (null == _ShiftColorUp)
+            {
+                Debug.Log("SHIFT UP");
                 StartCoroutine(_ShiftColorUp = ShiftColorUp());
+            }
         }
         ///////////////// highlight enum logic //////////////////
 
@@ -72,6 +75,8 @@ public class colorShifter : MonoBehaviour
 
             if (null == _ShiftColorDown)
             {
+                Debug.Log("SHIFT DOWN");
+                _Material.color = _InitialColor;
                 StartCoroutine(_ShiftColorDown = ShiftColorDown());
             }
         }
@@ -92,7 +97,7 @@ public class colorShifter : MonoBehaviour
             {
                 float step = _Step * Time.deltaTime;
                 alteredColor.r = _CurrentColor.r - step;
-                alteredColor.g = _CurrentColor.g - step;
+                alteredColor.g = _CurrentColor.g;
                 alteredColor.b = _CurrentColor.b - step;
                 alteredColor.a = _CurrentColor.a;
 
@@ -113,28 +118,9 @@ public class colorShifter : MonoBehaviour
         {
             _Time -= Time.deltaTime;
 
-            _CurrentColor = _Material.color;
-            Color alteredColor = new Color();
-
-            if (_CurrentColor.r < _InitialColor.r && _CurrentColor.g < _InitialColor.g && _CurrentColor.b < _InitialColor.b)
-            {
-                float step = _Step * Time.deltaTime;
-                alteredColor.r = _CurrentColor.r + step;
-                alteredColor.g = _CurrentColor.g + step;
-                alteredColor.b = _CurrentColor.b + step;
-                alteredColor.a = _CurrentColor.a;
-
-                _Material.color = alteredColor;
-            }
-            else
-            {
-                break;
-            }
 
             yield return null;
         }
-
-        _Material.color = _InitialColor;
 
         _Time = 0;
     }

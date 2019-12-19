@@ -18,8 +18,16 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     private float x, y, a, b;
 
     private GameController controller;
+    private ColorShifter colorShifter;
+    private highlight highlighter;
 
+    public int initialLineUsesLeft = 1;
     public int lineUsesLeft = 1;
+
+    private Transform pointer;
+    private bool tracking = false;
+    private float distanceSum = 0;
+    private float distanceCount = 0;
 
     public override void Awake()
     {
@@ -27,6 +35,8 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
         //InteractiveItem = gameObject.GetComponentInChildren<VRInteractiveItem>();
 
         controller = GameObject.Find("GameController").GetComponent<GameController>();
+        colorShifter = gameObject.GetComponent<ColorShifter>();
+        highlighter = gameObject.GetComponentInChildren<highlight>();
     }
 
     public void Initialize(float width, Node start, Node end)
@@ -124,7 +134,7 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
         if(node != null)
         {
             bool result = false;
-            if(Object.ReferenceEquals(node, nodeStart))
+            if (Object.ReferenceEquals(node, nodeStart))
             {
                 result = true;
             }
@@ -141,9 +151,19 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
             return false;
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
+        if (tracking)
+        {
+            if(distanceSum < 10000000)
+            {
+                pointer = GameObject.Find("Reticle").transform;
+                float dist = GetDistanceToPoint(pointer.position);
+                distanceSum += dist;
+                distanceCount++;
+            }
+        }
         //Transform pointer = GameObject.Find("testingPoint").transform;
         //float dist = GetDistanceToPoint(pointer.position);
         //Debug.Log("length: " + dist);
@@ -153,33 +173,78 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     {
         if(--lineUsesLeft <= 0)
         {
+            colorShifter.ShiftUp();
             Debug.Log("LINE HAS NO MORE USES");
+            highlighter.Disable();
         }
+    }
+
+    public void SaveFinalState()
+    {
+        initialLineUsesLeft = lineUsesLeft;
     }
 
     public void Reset()
     {
+        if(lineUsesLeft <= 0)
+        {
+            colorShifter.ShiftDown();
+            highlighter.Enable();
+        }
+        lineUsesLeft = initialLineUsesLeft;
 
+        //highlighter.enabled = true;
+    }
+
+    public void StartTrackingAccuraccy()
+    {
+        tracking = true;
+    }
+
+    public void StopTrackingAccuraccy()
+    {
+        tracking = false;
+        distanceSum = 0;
+        distanceCount = 0;
+    }
+
+    public float GetAverageAccuraccy()
+    {
+        if(distanceCount != 0)
+        {
+            return distanceSum / distanceCount;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     public override void HandleIn()
     {
-        if(lineUsesLeft > 0)
+        if (!disabled)
         {
-            Debug.Log("handle on line");
-            controller.OnHandleEnterLine(this);
-        }
-        else
-        {
-            Debug.Log("line used up");
+            if (lineUsesLeft > 0)
+            {
+                Debug.Log("handle on line");
+                controller.OnHandleEnterLine(this);
+            }
+            else
+            {
+                //highlighter.enabled = false;
+                Debug.Log("line used up");
+            }
         }
     }
 
     public override void HandleOut()
     {
-        if(lineUsesLeft > 0)
+        if (!disabled)
         {
-            controller.OnHandleLeaveLine(this);
+            if (lineUsesLeft > 0)
+            {
+                controller.OnHandleLeaveLine(this);
+            }
         }
     }
 

@@ -10,6 +10,7 @@ namespace EyeTribe.Unity.Interaction
     {
 
         protected VRInteractiveItem InteractiveItem;
+        protected bool disabled = false;
 
         public virtual void Awake()
         {
@@ -20,6 +21,24 @@ namespace EyeTribe.Unity.Interaction
             SelectionRadialEyeTribe.OnSelectionStarted += SelectionStarted;
             SelectionRadialEyeTribe.OnSelectionAborted += SelectionCanceled;
             SelectionRadialEyeTribe.OnSelectionComplete += SelectionCompleted;
+        }
+
+        public virtual void Disable()
+        {
+            if (!disabled)
+            {
+                disabled = true;
+                Debug.Log("ON DISABLE");
+            }
+        }
+
+        public virtual void Enable()
+        {
+            if (disabled)
+            {
+                disabled = false;
+                Debug.Log("ON ENABLE");
+            }
         }
 
         public abstract void HandleIn();
