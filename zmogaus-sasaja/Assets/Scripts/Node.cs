@@ -13,11 +13,11 @@ public class Node : EyeTribe.Unity.Interaction.InteractionHandler
     {
         base.Awake();
         controller = GameObject.Find("GameController").GetComponent<GameController>();
-        lines = new List<NodeLine>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        lines = new List<NodeLine>(); 
+    }
+
+    // Update is called once per frame
+    void Update () {
 	
 	}
 
@@ -37,6 +37,11 @@ public class Node : EyeTribe.Unity.Interaction.InteractionHandler
             }
         }
         return true;
+    }
+
+    public void Reset()
+    {
+
     }
 
     public override void HandleIn()
