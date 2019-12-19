@@ -217,4 +217,17 @@ public class GameController : MonoBehaviour {
             playing = state;
         }
     }
+
+    void ResetLevel()
+    {
+        for (int i = 0; i < lines.Count; i++)
+        {
+            lines[i].Reset();
+        }
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].Reset();
+        }
+
+    }
 }

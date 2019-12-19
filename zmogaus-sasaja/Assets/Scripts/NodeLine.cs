@@ -157,6 +157,11 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
         }
     }
 
+    public void Reset()
+    {
+
+    }
+
     public override void HandleIn()
     {
         if(lineUsesLeft > 0)
