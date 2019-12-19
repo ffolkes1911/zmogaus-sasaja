@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.IO;
 
 public class GameController : MonoBehaviour {
 
@@ -28,7 +29,7 @@ public class GameController : MonoBehaviour {
         nodePrefab = (GameObject)Resources.Load("Prefabs/Circle", typeof(GameObject));
         linePrefab = (GameObject)Resources.Load("Prefabs/Line", typeof(GameObject));
         textScore = GameObject.Find("TextScore").GetComponent<Text>();
-        LoadLevel("asd");
+        LoadLevel("Testas.txt");
     }
 
     void LoadLevel(string name)
@@ -38,7 +39,35 @@ public class GameController : MonoBehaviour {
         accuraccyList = new List<float>();
 
         DestroyLevelObjects();
+        float depth = levelObjects.transform.position.z;
+
         // do level loading
+
+        string path = Application.persistentDataPath+"/" + name;
+        StreamReader reader = new StreamReader(path);
+        string line = reader.ReadLine();
+
+        while (!reader.EndOfStream || !string.IsNullOrEmpty(line))
+        {
+            string[] words = line.Split(' ');
+
+            GameObject node = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
+            node.name = words[0];
+            node.transform.position = new Vector3(float.Parse(words[1]), float.Parse(words[2]), depth);
+            nodes.Add(node.GetComponent<Node>());
+            // Do Something with the input. 
+
+            line = reader.ReadLine();
+        }
+        Debug.Log("SPACE");
+        Debug.Log(path);
+        /*
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(path);
+        Debug.Log(reader.ReadToEnd());
+        reader.Close();
+
+
 
         // initial testing code
         float depth = levelObjects.transform.position.z;
@@ -114,7 +143,7 @@ public class GameController : MonoBehaviour {
         {
             lines[i].SaveFinalState();
         }
-
+        */
     }
 
     void DestroyLevelObjects()
