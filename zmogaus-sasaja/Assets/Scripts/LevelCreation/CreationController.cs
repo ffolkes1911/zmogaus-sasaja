@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class CreationController : MonoBehaviour {
     private struct Pair
@@ -170,12 +171,15 @@ public class CreationController : MonoBehaviour {
         {
             fileData += "\n" + pair.node1 + " " + pair.node2;
         }
-        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/" + levelName.text + ".txt");
+        if (!Directory.Exists(Application.persistentDataPath + "/Pritaikytas"))
+            Directory.CreateDirectory(Application.persistentDataPath + "/Pritaikytas");
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/Pritaikytas/" + levelName.text + ".txt");
         writer.Write(fileData);
         writer.Close();
         foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
         {
             Debug.Log(file.ToString());
         }
+        SceneManager.LoadScene("MainMenu");
     }
 }
