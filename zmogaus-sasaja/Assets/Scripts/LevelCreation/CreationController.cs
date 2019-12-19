@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.IO;
 
 public class CreationController : MonoBehaviour {
     private struct Pair
@@ -159,6 +160,22 @@ public class CreationController : MonoBehaviour {
     //================= Level Saving =================
     public void SaveLevel()
     {
-
+        string fileData = "";
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = this.transform.GetChild(i);
+            fileData += child.name + " " + child.position.x + " " + child.position.y + "\n";
+        }
+        foreach (var pair in NodePairs)
+        {
+            fileData += "\n" + pair.node1 + " " + pair.node2;
+        }
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/" + levelName.text + ".txt");
+        writer.Write(fileData);
+        writer.Close();
+        foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
+        {
+            Debug.Log(file.ToString());
+        }
     }
 }

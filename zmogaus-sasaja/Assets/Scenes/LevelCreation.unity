@@ -1229,6 +1229,7 @@ MonoBehaviour:
   linePrefab: {fileID: 1000010081269452, guid: c23b9e87d59ddbc40be2f80df2311df6, type: 2}
   previewNode: {fileID: 898809256}
   previewLine: {fileID: 642846586}
+  levelName: {fileID: 711004107}
 --- !u!4 &569926417
 Transform:
   m_ObjectHideFlags: 0
@@ -3027,11 +3028,11 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1649132165}
+      objectReference: {fileID: 569926416}
     - target: {fileID: 114000012788358922, guid: e9eaad256d565e64da6a088b6d7f934d,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: SaveLevel
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000011146801398, guid: e9eaad256d565e64da6a088b6d7f934d, type: 2}
