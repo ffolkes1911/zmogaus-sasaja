@@ -171,9 +171,9 @@ public class CreationController : MonoBehaviour {
         {
             fileData += "\n" + pair.node1 + " " + pair.node2;
         }
-        if (!Directory.Exists(Application.persistentDataPath + "/Pritaikytas"))
-            Directory.CreateDirectory(Application.persistentDataPath + "/Pritaikytas");
-        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/Pritaikytas/" + levelName.text + ".txt");
+        if (!Directory.Exists(Application.persistentDataPath))
+            Directory.CreateDirectory(Application.persistentDataPath);
+        StreamWriter writer = new StreamWriter(Application.persistentDataPath + "/" + levelName.text + ".txt");
         writer.Write(fileData);
         writer.Close();
         foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))

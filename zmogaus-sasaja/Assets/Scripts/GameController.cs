@@ -15,6 +15,9 @@ public class GameController : MonoBehaviour {
     bool playing = false;
     bool gotNode = false;
 
+    List<string> files;
+    int fileIndex = 0;
+
     //[HideInInspector]
     private Node startNode = null; // node from which you start connecting
     private Node endNode = null; // node that you connect the startNode with
@@ -29,7 +32,22 @@ public class GameController : MonoBehaviour {
         nodePrefab = (GameObject)Resources.Load("Prefabs/Circle", typeof(GameObject));
         linePrefab = (GameObject)Resources.Load("Prefabs/Line", typeof(GameObject));
         textScore = GameObject.Find("TextScore").GetComponent<Text>();
-        LoadLevel("Testas.txt");
+
+        files = new List<string>();
+
+
+        foreach (string file in System.IO.Directory.GetFiles(Application.persistentDataPath))
+        {
+            string[] name = file.Split('\\');
+            files.Add(name[name.Length - 1]);
+        }
+
+        LoadNextLevel();
+    }
+
+    public void LoadNextLevel()
+    {
+        LoadLevel(files[fileIndex++]);
     }
 
     void LoadLevel(string name)
@@ -43,11 +61,11 @@ public class GameController : MonoBehaviour {
 
         // do level loading
 
-        string path = Application.persistentDataPath+"/" + name;
+        string path = Application.persistentDataPath + "/" + name;
         StreamReader reader = new StreamReader(path);
         string line = reader.ReadLine();
 
-        while (!reader.EndOfStream || !string.IsNullOrEmpty(line))
+        while (!reader.EndOfStream && !string.IsNullOrEmpty(line))
         {
             string[] words = line.Split(' ');
 
@@ -59,81 +77,39 @@ public class GameController : MonoBehaviour {
 
             line = reader.ReadLine();
         }
-        Debug.Log("SPACE");
+        line = reader.ReadLine();
+        while (!string.IsNullOrEmpty(line))
+        {
+            int node1Index = 0, node2Index = 0;
+
+            string[] words = line.Split(' ');
+
+            GameObject nodeLineObject = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
+            nodeLineObject.name = "line" + lines.Count;
+            NodeLine nodeLine = nodeLineObject.GetComponent<NodeLine>();
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].name == words[0])
+                {
+                    node1Index = i;
+                }
+                if (nodes[i].name == words[1])
+                {
+                    node2Index = i;
+                }
+            }
+            nodeLine.Initialize(0.03f, nodes[node1Index], nodes[node2Index]);
+            lines.Add(nodeLine);
+            // Do Something with the input. 
+
+            if (!reader.EndOfStream)
+                line = reader.ReadLine();
+            else
+                break;
+        }
+
         Debug.Log(path);
-        /*
-        //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(path);
-        Debug.Log(reader.ReadToEnd());
-        reader.Close();
-
-
-
-        // initial testing code
-        float depth = levelObjects.transform.position.z;
-        GameObject node1 = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
-        node1.name = "node1";
-        node1.transform.position = new Vector3(-1, 2, depth);
-        nodes.Add(node1.GetComponent<Node>());
-
-        GameObject node2 = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
-        node2.name = "node2";
-        node2.transform.position = new Vector3(0.458f, 1.554f, depth);
-        nodes.Add(node2.GetComponent<Node>());
-
-        GameObject node3 = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
-        node3.name = "node3";
-        node3.transform.position = new Vector3(-1.679f, 0.736f, depth);
-        nodes.Add(node3.GetComponent<Node>());
-
-        GameObject node4 = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
-        node4.name = "node4";
-        node4.transform.position = new Vector3(-0.294f, 1.032f, depth);
-        nodes.Add(node4.GetComponent<Node>());
-
-        GameObject node5 = GameObject.Instantiate(nodePrefab, levelObjects) as GameObject;
-        node5.name = "node5";
-        node5.transform.position = new Vector3(1.306f, 0.792f, depth);
-        nodes.Add(node5.GetComponent<Node>());
-
-
-        GameObject line1 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line1.name = "line1";
-        NodeLine nodeline1 = line1.GetComponent<NodeLine>();
-        nodeline1.Initialize(0.03f, node1.GetComponent<Node>(), node2.GetComponent<Node>());
-        lines.Add(nodeline1);
-
-        GameObject line2 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line2.name = "line2";
-        NodeLine nodeline2 = line2.GetComponent<NodeLine>();
-        nodeline2.Initialize(0.03f, node1.GetComponent<Node>(), node3.GetComponent<Node>());
-        lines.Add(nodeline2);
-
-        GameObject line3 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line3.name = "line3";
-        NodeLine nodeline3 = line3.GetComponent<NodeLine>();
-        nodeline3.Initialize(0.03f, node1.GetComponent<Node>(), node4.GetComponent<Node>());
-        lines.Add(nodeline3);
-
-        GameObject line4 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line4.name = "line4";
-        NodeLine nodeline4 = line4.GetComponent<NodeLine>();
-        nodeline4.Initialize(0.03f, node3.GetComponent<Node>(), node4.GetComponent<Node>());
-        lines.Add(nodeline4);
-
-        GameObject line5 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line5.name = "line5";
-        NodeLine nodeline5 = line5.GetComponent<NodeLine>();
-        nodeline5.Initialize(0.03f, node5.GetComponent<Node>(), node3.GetComponent<Node>());
-        lines.Add(nodeline5);
-
-        GameObject line6 = GameObject.Instantiate(linePrefab, levelObjects) as GameObject;
-        line6.name = "line6";
-        NodeLine nodeline6 = line6.GetComponent<NodeLine>();
-        nodeline6.Initialize(0.03f, node5.GetComponent<Node>(), node4.GetComponent<Node>());
-        lines.Add(nodeline6);
-
-        // initial testing code
 
         for (int i = 0; i < nodes.Count; i++)
         {
@@ -143,7 +119,7 @@ public class GameController : MonoBehaviour {
         {
             lines[i].SaveFinalState();
         }
-        */
+
     }
 
     void DestroyLevelObjects()
@@ -232,8 +208,8 @@ public class GameController : MonoBehaviour {
             startNode = endNode;
             endNode = null;
 
-            currentLine.StopTrackingAccuraccy();
             accuraccyList.Add(currentLine.GetAverageAccuraccy());
+            currentLine.StopTrackingAccuraccy();
             currentLine.useLine();
             currentLine = null;
 
@@ -271,6 +247,7 @@ public class GameController : MonoBehaviour {
         else
         {
             playing = state;
+            ResetLevel();
         }
     }
 
@@ -309,8 +286,9 @@ public class GameController : MonoBehaviour {
         {
             avgAccuraccySum += accuraccyList[i];
         }
+        Debug.Log("accuraccySum: " + avgAccuraccySum);
         float avgAccuraccy = avgAccuraccySum / accuraccyList.Count;
-        score += 1 / avgAccuraccy;
+        score += 10 / avgAccuraccy;
 
         textScore.text = "Surinkti taškai: " + score.ToString();
         textScore.GetComponent<Fader>().FadeIn();

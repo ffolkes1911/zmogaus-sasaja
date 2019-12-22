@@ -156,12 +156,18 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
     void Update () {
         if (tracking)
         {
+            Debug.Log("tracking");
             if(distanceSum < 10000000)
             {
                 pointer = GameObject.Find("Reticle").transform;
                 float dist = GetDistanceToPoint(pointer.position);
                 distanceSum += dist;
                 distanceCount++;
+                Debug.Log("dist Sum: " + distanceSum);
+            }
+            else
+            {
+                Debug.Log("overflow: " + distanceSum);
             }
         }
         //Transform pointer = GameObject.Find("testingPoint").transform;
@@ -198,19 +204,27 @@ public class NodeLine : EyeTribe.Unity.Interaction.InteractionHandler
 
     public void StartTrackingAccuraccy()
     {
-        tracking = true;
+        if (!tracking)
+        {
+            tracking = true;
+            distanceCount = 0;
+            distanceSum = 0;
+        }
     }
 
     public void StopTrackingAccuraccy()
     {
-        tracking = false;
-        distanceSum = 0;
-        distanceCount = 0;
+        if (tracking)
+        {
+            tracking = false;
+            distanceCount = 0;
+            distanceSum = 0;
+        }
     }
 
     public float GetAverageAccuraccy()
     {
-        if(distanceCount != 0)
+        if(distanceCount > 0)
         {
             return distanceSum / distanceCount;
         }
